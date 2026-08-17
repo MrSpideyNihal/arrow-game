@@ -53,7 +53,9 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 72px;
+  min-height: 72px;
+  padding: 8px 0;
+  gap: 16px;
 }
 
 .brand {
@@ -61,6 +63,7 @@ header {
   align-items: center;
   gap: 12px;
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .brand-icon {
@@ -80,6 +83,7 @@ header {
   font-weight: 900;
   letter-spacing: 1px;
   color: #ffffff;
+  white-space: nowrap;
 }
 
 .brand-text span {
@@ -88,13 +92,19 @@ header {
   color: var(--primary);
   letter-spacing: 2px;
   display: block;
+  white-space: nowrap;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 20px;
   list-style: none;
+  flex-wrap: nowrap;
+}
+
+.nav-links li {
+  white-space: nowrap;
 }
 
 .nav-links a {
@@ -102,6 +112,7 @@ header {
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 600;
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
@@ -111,18 +122,23 @@ header {
 }
 
 .btn-nav {
-  padding: 10px 20px;
-  background: linear-gradient(135deg, #38bdf8, #0284c7);
-  color: #0f172a !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff !important;
   font-weight: 800 !important;
+  font-size: 0.9rem !important;
   border-radius: 10px;
-  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35);
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
   transition: transform 0.2s ease, box-shadow 0.2s ease !important;
 }
 
 .btn-nav:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5) !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6) !important;
 }
 
 /* ──────── Hero ──────── */
@@ -425,14 +441,31 @@ footer {
   font-size: 0.85rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 860px) {
+  .nav-links {
+    gap: 12px;
+  }
+  .nav-links a {
+    font-size: 0.85rem;
+  }
+  .btn-nav {
+    padding: 7px 14px;
+    font-size: 0.82rem !important;
+  }
+}
+
+@media (max-width: 680px) {
   .hero h2 {
-    font-size: 2.4rem;
+    font-size: 2.2rem;
   }
   .legal-card {
-    padding: 28px 20px;
+    padding: 24px 16px;
   }
-  .nav-links {
+  .nav-links li:not(:last-child) {
     display: none;
+  }
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    justify-content: center;
   }
 }
