@@ -1,0 +1,52 @@
+# Build artifacts & Binaries
+build/
+**/build/
+dist/
+**/dist/
+*.apk
+*.aab
+*.zip
+*.tar.gz
+ArrowClick-v1.0.0.apk
+ArrowClick-v1.0.0.zip
+
+# Keystore & Signing Secrets
+*.jks
+*.keystore
+key.properties
+**/key.properties
+upload-keystore.jks
+**/upload-keystore.jks
+
+# Flutter & Dart
+.dart_tool/
+**/.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+**/coverage/
+
+# IDE & OS
+.idea/
+**/.idea/
+.vscode/
+**/.vscode/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+
+# Android Studio / Gradle
+.gradle/
+**/.gradle/
+local.properties
+**/local.properties
+**/android/app/debug
+**/android/app/profile
+**/android/app/release

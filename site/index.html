@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArrowMint: The Arrow Game - Satisfying Chill Escape Puzzle</title>
+  <meta name="description" content="ArrowMint is a satisfying, minimalist zen arrow puzzle game. Clear paths, trigger chain combos, and relax with calming soundscapes. Available on Google Play.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header>
+    <div class="container nav-wrap">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">🏹</div>
+        <div class="brand-text">
+          <h1>ARROWMINT</h1>
+          <span>THE ARROW GAME</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#demo">Try Puzzle</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="terms.html">Terms</a></li>
+        <li><a href="https://play.google.com/store/apps/details?id=com.arrowmint.thearrowgame" class="btn-nav">Get on Google Play</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="badge">✨ Relaxing & Satisfying Zen Puzzle</div>
+      <h2>Clear the Grid.<br>Find Your Flow.</h2>
+      <p>
+        Tap unblocked arrows to launch them away. Untangle intricate multi-directional mazes, build satisfying combo chains, and unwind with procedural acoustic soundscapes.
+      </p>
+
+      <div class="hero-cta">
+        <a href="https://play.google.com/store/apps/details?id=com.arrowmint.thearrowgame" class="btn-primary">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a1.986 1.986 0 0 1-.61-.926V2.74c.15-.362.36-.682.61-.926zm11.233 11.235l2.49 2.49-11.45 6.611 8.96-9.101zm0-2.098L5.882 1.85l11.45 6.611-2.49 2.49zm1.485 1.049l3.52-2.032a1.45 1.45 0 0 1 0 2.514l-3.52 2.032-1.743-1.257 1.743-1.257z"/></svg>
+          Get on Google Play
+        </a>
+        <a href="#demo" class="btn-secondary">
+          🎯 Play Mini Demo
+        </a>
+      </div>
+
+      <!-- Interactive Mini Preview -->
+      <div class="game-preview" id="demo">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <span style="font-weight: 800; font-size: 0.9rem; color: var(--primary); letter-spacing: 1px;">INTERACTIVE DEMO</span>
+          <span id="demo-status" style="font-size: 0.85rem; color: #94a3b8;">Tap the free arrows!</span>
+        </div>
+        <div class="board-container" id="board">
+          <!-- JS generates interactive tiles -->
+        </div>
+        <button id="reset-btn" style="margin-top: 16px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; font-weight: 700; text-decoration: underline;">
+          ↻ Reset Demo Board
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge">🎮 Game Highlights</div>
+        <h3>Crafted for Pure Satisfaction</h3>
+        <p>Everything you need for short daily brain breaks or hours of deep meditative focus.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">🧩</div>
+          <h4>1,000+ Solvable Levels</h4>
+          <p>Every single layout is mathematically validated with our deterministic solver. Zero dead-ends, 100% fair puzzle design.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="background: rgba(52, 211, 153, 0.15); color: #34d399;">🎵</div>
+          <h4>Zen Acoustic Soundscape</h4>
+          <p>Procedural wooden kalimba bells, analog warm pads, and harmonic chord layers in 432Hz tuning designed to melt away stress.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">⚡</div>
+          <h4>Dynamic Combo Engine</h4>
+          <p>Time your arrow releases consecutively to trigger rising musical pitches, unlock Flow State, and earn bonus Sparks!</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="background: rgba(168, 85, 247, 0.15); color: #a855f7;">🎨</div>
+          <h4>Cosmetic Shop & Themes</h4>
+          <p>Customize your experience with Mint Neumorphism, Cyberpunk Neon, Pastel Dreams, and customizable arrow skins.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">💣</div>
+          <h4>Tactical Abilities</h4>
+          <p>Stuck on an extreme labyrinth? Use the Radar scan to reveal clear paths or the Bomb booster to vaporize blockers.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="background: rgba(14, 165, 233, 0.15); color: #0ea5e9;">📴</div>
+          <h4>100% Offline Play</h4>
+          <p>No internet required to play main campaign levels. Perfect for commutes, flights, and daily relaxation breaks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="mailto:support@arrowmint.com">Contact Support</a>
+      </div>
+      <p class="copyright">&copy; 2026 ArrowMint - The arrow game (com.arrowmint.thearrowgame). All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Mini Interactive Board Script -->
+  <script>
+    const boardEl = document.getElementById('board');
+    const statusEl = document.getElementById('demo-status');
+    const resetBtn = document.getElementById('reset-btn');
+
+    // Simple 4x4 solvable demo puzzle: [direction, isFreeInitially]
+    const initialBoard = [
+      { dir: '↑', free: true },  { dir: '→', free: true },  { dir: '↓', free: false }, { dir: '←', free: false },
+      { dir: '←', free: true },  { dir: '↑', free: false }, { dir: '→', free: true },  { dir: '↓', free: true },
+      { dir: '↓', free: true },  { dir: '←', free: false }, { dir: '↑', free: true },  { dir: '→', free: true },
+      { dir: '→', free: true },  { dir: '↓', free: true },  { dir: '←', free: true },  { dir: '↑', free: false }
+    ];
+
+    let remaining = 0;
+
+    function renderBoard() {
+      boardEl.innerHTML = '';
+      remaining = initialBoard.length;
+      statusEl.textContent = 'Tap the arrows to clear!';
+      statusEl.style.color = '#94a3b8';
+
+      initialBoard.forEach((item, idx) => {
+        const tile = document.createElement('div');
+        tile.className = 'arrow-tile';
+        tile.textContent = item.dir;
+        tile.style.color = ['#38bdf8', '#34d399', '#f59e0b', '#a855f7'][idx % 4];
+
+        tile.addEventListener('click', () => {
+          tile.classList.add('escaped');
+          remaining--;
+          if (remaining === 0) {
+            statusEl.textContent = '🎉 Board Cleared! Nice Flow!';
+            statusEl.style.color = '#34d399';
+          } else {
+            statusEl.textContent = `${remaining} arrows remaining`;
+          }
+        });
+
+        boardEl.appendChild(tile);
+      });
+    }
+
+    resetBtn.addEventListener('click', renderBoard);
+    renderBoard();
+  </script>
+</body>
+</html>

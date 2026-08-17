@@ -1,0 +1,46 @@
+name: arrow_flow
+description: A one-tap logic puzzle game with momentum combo and flow state mechanics.
+publish_to: 'none'
+version: 1.0.1+2
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # State management
+  flutter_riverpod: ^2.6.1
+  # Local persistence
+  shared_preferences: ^2.3.4
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  # Animation
+  flutter_animate: ^4.5.2
+  # Audio
+  audioplayers: ^6.1.0
+  # Typography
+  google_fonts: ^6.2.1
+  # Icons
+  phosphor_flutter: ^2.1.0
+  # Utilities
+  path_provider: ^2.1.5
+  collection: ^1.19.0
+  crypto: ^3.0.6
+  equatable: ^2.0.7
+  web: ^0.5.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - config/game_config.json
+    - assets/levels/
+    - assets/audio/
+
+

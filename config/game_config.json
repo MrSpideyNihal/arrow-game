@@ -1,0 +1,88 @@
+{
+  "app": {
+    "name": "Arrovia — Arrow Escape Puzzle",
+    "packageId": "com.yourstudio.changeme",
+    "version": "1.0.0",
+    "buildNumber": 1,
+    "supportEmail": "support@yourstudio.com",
+    "privacyPolicyUrl": "https://yourstudio.com/arrowflow/privacy",
+    "termsUrl": "https://yourstudio.com/arrowflow/terms"
+  },
+  "featureFlags": {
+    "dailyChallenge": true,
+    "comboSystem": true,
+    "colorLockedArrows": false,
+    "cosmeticShop": true
+  },
+  "ads": {
+    "provider": "admob",
+    "testMode": true,
+    "enableAds": true,
+    "androidAppId": "ca-app-pub-8008085801755273~7721948002",
+    "bannerAdUnitId": "ca-app-pub-8008085801755273/6408866335",
+    "rewardedAdUnitId": "ca-app-pub-8008085801755273/1610312711",
+    "bannerPlacements": [
+      "main_menu",
+      "level_select"
+    ],
+    "rewardedTriggers": [
+      "extra_hint",
+      "second_wind_revive",
+      "daily_double_reward"
+    ]
+  },
+  "monetization": {
+    "removeAdsProductId": "remove_ads_lifetime",
+    "removeAdsHidesBanner": true
+  },
+  "gameplay": {
+    "startingLives": 3,
+    "startingHints": 3,
+    "comboWindowMs": 1400,
+    "comboTierThresholds": [
+      3,
+      6,
+      10
+    ],
+    "mistakePenalty": "loseHeart",
+    "secondWindEnabled": true,
+    "secondWindCostSparks": 50
+  },
+  "economy": {
+    "sparksPerStar": 5,
+    "sparksPerFlowState": 15,
+    "sparksPerDailyChallenge": 30,
+    "rewardedAdSparksBonus": 20,
+    "hintCostSparks": 15
+  },
+  "levels": {
+    "bundledCount": 100,
+    "bundledPackFile": "assets/levels/levels_pack_001.json",
+    "generatedTargetCount": 1000,
+    "difficultyCurveSeed": 20260809,
+    "cacheGeneratedLevelsLocally": true
+  },
+  "theme": {
+    "style": "soft_neumorphism",
+    "light": {
+      "background": "#EDEEF2",
+      "surface": "#F4F5F8",
+      "arrowPrimary": "#1B2340",
+      "accent": "#00C2A8",
+      "textPrimary": "#1B1D24"
+    },
+    "dark": {
+      "background": "#14151A",
+      "surface": "#1B1D24",
+      "arrowPrimary": "#E7E9F0",
+      "accent": "#00E0BF",
+      "textPrimary": "#F4F5F8"
+    },
+    "defaultMode": "system"
+  },
+  "audio": {
+    "sfxEnabledDefault": true,
+    "musicEnabledDefault": false,
+    "hapticsEnabledDefault": true
+  }
+}
