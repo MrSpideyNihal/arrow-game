@@ -1,0 +1,89 @@
+{
+  "app": {
+    "name": "ArrowMint - The arrow game",
+    "packageId": "com.arrowmint.thearrowgame",
+    "version": "1.0.0",
+    "buildNumber": 1,
+    "supportEmail": "support@arrowmint.com",
+    "privacyPolicyUrl": "https://arrowmint.com/privacy",
+    "termsUrl": "https://arrowmint.com/terms"
+  },
+  "featureFlags": {
+    "dailyChallenge": true,
+    "comboSystem": true,
+    "colorLockedArrows": false,
+    "cosmeticShop": true
+  },
+  "ads": {
+    "provider": "admob",
+    "testMode": false,
+    "enableAds": true,
+    "androidAppId": "ca-app-pub-8008085801755273~7721948002",
+    "bannerAdUnitId": "ca-app-pub-8008085801755273/6408866335",
+    "rewardedAdUnitId": "ca-app-pub-8008085801755273/1610312711",
+    "bannerPlacements": [
+      "main_menu",
+      "level_select",
+      "gameplay"
+    ],
+    "rewardedTriggers": [
+      "extra_hint",
+      "second_wind_revive",
+      "daily_double_reward"
+    ]
+  },
+  "monetization": {
+    "removeAdsProductId": "remove_ads_lifetime",
+    "removeAdsHidesBanner": true
+  },
+  "gameplay": {
+    "startingLives": 3,
+    "startingHints": 3,
+    "comboWindowMs": 1400,
+    "comboTierThresholds": [
+      3,
+      6,
+      10
+    ],
+    "mistakePenalty": "loseHeart",
+    "secondWindEnabled": true,
+    "secondWindCostSparks": 50
+  },
+  "economy": {
+    "sparksPerStar": 5,
+    "sparksPerFlowState": 15,
+    "sparksPerDailyChallenge": 30,
+    "rewardedAdSparksBonus": 20,
+    "hintCostSparks": 15
+  },
+  "levels": {
+    "bundledCount": 500,
+    "bundledPackFile": "assets/levels/levels_pack_001.json",
+    "generatedTargetCount": 1000,
+    "difficultyCurveSeed": 20260809,
+    "cacheGeneratedLevelsLocally": true
+  },
+  "theme": {
+    "style": "soft_neumorphism",
+    "light": {
+      "background": "#FFF0F5",
+      "surface": "#FFFFFF",
+      "arrowPrimary": "#EC4899",
+      "accent": "#F472B6",
+      "textPrimary": "#831843"
+    },
+    "dark": {
+      "background": "#FFF0F5",
+      "surface": "#FFFFFF",
+      "arrowPrimary": "#EC4899",
+      "accent": "#F472B6",
+      "textPrimary": "#831843"
+    },
+    "defaultMode": "light"
+  },
+  "audio": {
+    "sfxEnabledDefault": true,
+    "musicEnabledDefault": false,
+    "hapticsEnabledDefault": true
+  }
+}

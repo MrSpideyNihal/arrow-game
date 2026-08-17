@@ -1,18 +1,30 @@
 # Netlify Configuration for ArrowMint
 
 [build]
-  # Default publish directory for the Marketing Landing Page & Legal Docs
+  # Publish directory containing marketing site, privacy policy, and full Flutter web game (/play)
   publish = "site"
 
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "DENY"
+    X-Frame-Options = "SAMEORIGIN"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
-# SPA redirects for privacy & terms
+# Flutter Web headers for CanvasKit & WASM
+[[headers]]
+  for = "/play/*"
+  [headers.values]
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Embedder-Policy = "credentialless"
+
+# SPA redirects
+[[redirects]]
+  from = "/play"
+  to = "/play/index.html"
+  status = 200
+
 [[redirects]]
   from = "/privacy"
   to = "/privacy/index.html"
