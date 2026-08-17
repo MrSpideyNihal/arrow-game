@@ -1,1 +1,1 @@
-# arrow-game
+# arrow-mint
