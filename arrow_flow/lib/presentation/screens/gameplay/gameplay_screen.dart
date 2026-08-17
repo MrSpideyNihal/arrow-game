@@ -13,6 +13,7 @@ import '../../../main.dart';
 import '../../state/gameplay_providers.dart';
 import 'widgets/board_view.dart';
 import 'widgets/hud_bar.dart';
+import 'widgets/momentum_bar.dart';
 
 /// Premium gameplay screen. Supports both normal and timer mode.
 class GameplayScreen extends ConsumerStatefulWidget {
@@ -43,6 +44,23 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen>
   int _adsWatchedForSkip = 0;
   bool _gameOverShown = false;
   bool _timeUpShown = false;
+
+  String? _comboBannerText;
+  Color _comboBannerColor = const Color(0xFF38BDF8);
+  Timer? _comboBannerTimer;
+
+  void _triggerComboBanner(String text, Color color) {
+    _comboBannerTimer?.cancel();
+    setState(() {
+      _comboBannerText = text;
+      _comboBannerColor = color;
+    });
+    _comboBannerTimer = Timer(const Duration(milliseconds: 1500), () {
+      if (mounted) {
+        setState(() => _comboBannerText = null);
+      }
+    });
+  }
 
   AlwaysAliveRefreshable<GameState> get _stateProvider => widget.isTimerMode
       ? timerGameStateProvider(TimerLevelArgs(level: widget.level, timerSeconds: widget.timerSeconds))
@@ -178,20 +196,108 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen>
                 onSettingsTap: () => _showPauseSheet(context, isDark),
               ),
 
-              // Puzzle Board with Interactive Zoom & Pan
+              // Live Dynamic Combo & Momentum Multiplier Bar
+              MomentumBar(
+                comboCount: gameState.comboState.comboCount,
+                tier: gameState.comboState.currentTier,
+                tierProgress: gameState.comboState.tierProgress,
+                isActive: gameState.comboState.comboCount > 0,
+                isDark: isDark,
+              ),
+
+              // Puzzle Board with Interactive Zoom & Pan & Flow State Aura
               Expanded(
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: BoardView(
-                    level: widget.level,
-                    activeArrows: gameState.activeArrows,
-                    selectableArrows: gameState.selectableArrows,
-                    hintedArrow: _hintedArrow,
-                    onArrowTap: (arrow) => _onArrowTap(arrow),
-                    showGrid: _showGrid,
-                    isBombMode: _isBombMode,
-                    isRadarActive: _isRadarActive,
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Board with Flow State breathing glow
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 350),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          border: gameState.comboState.currentTier >= 3
+                              ? Border.all(
+                                  color: const Color(0xFFA855F7).withValues(alpha: 0.85),
+                                  width: 2.5,
+                                )
+                              : (gameState.comboState.currentTier >= 2
+                                  ? Border.all(
+                                      color: const Color(0xFFF59E0B).withValues(alpha: 0.6),
+                                      width: 1.5,
+                                    )
+                                  : null),
+                          boxShadow: gameState.comboState.currentTier >= 3
+                              ? [
+                                  BoxShadow(
+                                    color: const Color(0xFFA855F7).withValues(alpha: 0.35),
+                                    blurRadius: 20,
+                                    spreadRadius: 2,
+                                  ),
+                                ]
+                              : (gameState.comboState.currentTier >= 2
+                                  ? [
+                                      BoxShadow(
+                                        color: const Color(0xFFF59E0B).withValues(alpha: 0.2),
+                                        blurRadius: 12,
+                                      ),
+                                    ]
+                                  : null),
+                        ),
+                        child: BoardView(
+                          level: widget.level,
+                          activeArrows: gameState.activeArrows,
+                          selectableArrows: gameState.selectableArrows,
+                          hintedArrow: _hintedArrow,
+                          onArrowTap: (arrow) => _onArrowTap(arrow),
+                          showGrid: _showGrid,
+                          isBombMode: _isBombMode,
+                          isRadarActive: _isRadarActive,
+                        ),
+                      ),
+
+                      // Floating Combo Surge Banner Overlay
+                      if (_comboBannerText != null)
+                        Positioned(
+                          top: 12,
+                          child: TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0.6, end: 1.0),
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.elasticOut,
+                            builder: (context, scale, child) {
+                              return Transform.scale(
+                                scale: scale,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
+                                  decoration: BoxDecoration(
+                                    color: _comboBannerColor.withValues(alpha: 0.95),
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: _comboBannerColor.withValues(alpha: 0.65),
+                                        blurRadius: 16,
+                                        spreadRadius: 2,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    _comboBannerText!,
+                                    style: const TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white,
+                                      letterSpacing: 1.0,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
@@ -321,6 +427,13 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen>
       if (currentTier > previousTier) {
         audio.playComboTier();
         haptics.comboTier();
+        if (currentTier >= 3) {
+          _triggerComboBanner('🔥 FLOW STATE ACTIVE! 🔥', const Color(0xFFA855F7));
+        } else if (currentTier == 2) {
+          _triggerComboBanner('⚡ 3X MULTIPLIER! ⚡', const Color(0xFFF59E0B));
+        } else if (currentTier == 1) {
+          _triggerComboBanner('✨ 2X STREAK! ✨', const Color(0xFF38BDF8));
+        }
       } else {
         haptics.remove();
       }
