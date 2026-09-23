@@ -3,6 +3,7 @@ import '../../../core/services/storage_service.dart';
 import '../../../core/services/ads_service.dart';
 import '../../../core/services/audio_service.dart';
 import '../../../core/services/haptics_service.dart';
+import '../../../core/services/iap_service.dart';
 import '../../../data/repositories/progress_repository.dart';
 import '../../../data/models/economy_model.dart';
 import '../../../main.dart';
@@ -21,6 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _storage = StorageService();
   int _sparks = 0;
   int _totalStars = 0;
+  final _iap = IapService();
   String _activeSkinId = 'arrow_default';
   String _activeThemeId = 'theme_default';
   bool _isLoading = true;
@@ -28,6 +30,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
+    _iap.initialize();
+    _iap.onPurchaseCompleted = _loadData;
     _loadData();
   }
 
@@ -42,6 +46,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _activeThemeId = _storage.getSetting<String>('active_theme', defaultValue: 'theme_default')!;
         _isLoading = false;
       });
+    }
+  }
+
+  Future<void> _buyIap(String productId, String name) async {
+    HapticsService().tap();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Contacting Google Play Store for $name...'),
+        duration: const Duration(seconds: 1),
+      ),
+    );
+    final success = await _iap.buyProduct(productId);
+    if (success) {
+      AudioService(config: appConfig.audio).playComboTier();
+      HapticsService().comboTier();
+      await _loadData();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('🎉 Purchase Successful! Delivered $name.'),
+            backgroundColor: const Color(0xFF10B981),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 
@@ -276,6 +305,247 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
 
         const SizedBox(height: 24),
+
+        // GOOGLE PLAY MONETIZATION: IN-APP PURCHASE STORE
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                const Color(0xFF6366F1).withValues(alpha: 0.2),
+                const Color(0xFF8B5CF6).withValues(alpha: 0.1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: const Color(0xFF8B5CF6).withValues(alpha: 0.4)),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF6366F1).withValues(alpha: 0.15),
+                blurRadius: 18,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF8B5CF6).withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.shopping_bag_rounded, color: Color(0xFFA78BFA), size: 18),
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
+                    'SPARKS & COIN STORE',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () async {
+                      HapticsService().tap();
+                      await _iap.restorePurchases();
+                      await _loadData();
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Purchases restored from Google Play.'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text(
+                      'Restore',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFFA78BFA),
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Sparks Packs Row
+              Row(
+                children: [
+                  // 100 Sparks
+                  Expanded(
+                    child: _IapSparkTile(
+                      emoji: '✨',
+                      title: '100 Sparks',
+                      subtitle: 'Starter Pack',
+                      price: _iap.getPrice(IapService.idSparksSmall),
+                      badge: null,
+                      gradientColors: const [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                      onTap: () => _buyIap(IapService.idSparksSmall, '100 Sparks'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // 500 Sparks
+                  Expanded(
+                    child: _IapSparkTile(
+                      emoji: '💎',
+                      title: '500 Sparks',
+                      subtitle: 'Most Popular',
+                      price: _iap.getPrice(IapService.idSparksMedium),
+                      badge: 'POPULAR',
+                      gradientColors: const [Color(0xFF8B5CF6), Color(0xFF6D28D9)],
+                      onTap: () => _buyIap(IapService.idSparksMedium, '500 Sparks'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // 1500 Sparks
+                  Expanded(
+                    child: _IapSparkTile(
+                      emoji: '👑',
+                      title: '1,500 Sparks',
+                      subtitle: 'Best Value',
+                      price: _iap.getPrice(IapService.idSparksLarge),
+                      badge: 'VALUE',
+                      gradientColors: const [Color(0xFFEC4899), Color(0xFFBE185D)],
+                      onTap: () => _buyIap(IapService.idSparksLarge, '1,500 Sparks'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+
+              // Special Store Upgrades: Remove Ads & Super Booster Pack
+              Row(
+                children: [
+                  // Remove Ads
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => _buyIap(IapService.idRemoveAds, 'Remove Ads Forever'),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.07),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.4)),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF10B981).withValues(alpha: 0.2),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.block_rounded, color: Color(0xFF34D399), size: 20),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _iap.hasRemovedAds ? 'Ads Removed' : 'Remove Ads',
+                                    style: const TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    _iap.hasRemovedAds ? 'Unlocked ✨' : _iap.getPrice(IapService.idRemoveAds),
+                                    style: const TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFF34D399),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  // Booster Bundle
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => _buyIap(IapService.idBoosterPack, 'Super Booster Bundle'),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.07),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.4)),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF59E0B).withValues(alpha: 0.2),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.flash_on_rounded, color: Color(0xFFFBBF24), size: 20),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    '+5 All Boosters',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    _iap.getPrice(IapService.idBoosterPack),
+                                    style: const TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFFFBBF24),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
 
         // ABILITIES & BOOSTERS SHOP (Buy with Sparks)
         Container(
@@ -867,5 +1137,132 @@ class _EquippedTile extends StatelessWidget {
     if (hex.length == 7) buffer.write('FF');
     buffer.write(hex.replaceFirst('#', ''));
     return Color(int.parse(buffer.toString(), radix: 16));
+  }
+}
+
+class _IapSparkTile extends StatelessWidget {
+  final String emoji;
+  final String title;
+  final String subtitle;
+  final String price;
+  final String? badge;
+  final List<Color> gradientColors;
+  final VoidCallback onTap;
+
+  const _IapSparkTile({
+    required this.emoji,
+    required this.title,
+    required this.subtitle,
+    required this.price,
+    this.badge,
+    required this.gradientColors,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  gradientColors.first.withValues(alpha: 0.25),
+                  gradientColors.last.withValues(alpha: 0.1),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: gradientColors.first.withValues(alpha: 0.5),
+                width: 1.5,
+              ),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  emoji,
+                  style: const TextStyle(fontSize: 24),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 9,
+                    color: Colors.white.withValues(alpha: 0.6),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: gradientColors),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: gradientColors.first.withValues(alpha: 0.4),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    price,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (badge != null)
+            Positioned(
+              top: -6,
+              right: 6,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEF4444),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  badge!,
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 8,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }

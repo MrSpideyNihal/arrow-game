@@ -78,6 +78,15 @@ header {
   box-shadow: 0 0 20px var(--primary-glow);
 }
 
+.brand-img-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.4);
+  display: block;
+}
+
 .brand-text h1 {
   font-size: 1.25rem;
   font-weight: 900;
