@@ -10,7 +10,6 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 
@@ -18,7 +17,6 @@ class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.arrowmint.thearrowgame/ads"
     private var rewardedAd: RewardedAd? = null
     private var isLoadingAd = false
-    private val GOOGLE_SAMPLE_REWARDED_ID = "ca-app-pub-3940256099942544/5224354917"
     private var activeAdUnitId = "ca-app-pub-8008085801755273/1610312711"
     private val mainHandler = Handler(Looper.getMainLooper())
 
@@ -29,10 +27,6 @@ class MainActivity : FlutterActivity() {
             when (call.method) {
                 "initAds" -> {
                     try {
-                        val requestConfig = RequestConfiguration.Builder()
-                            .setTestDeviceIds(listOf(AdRequest.DEVICE_ID_EMULATOR))
-                            .build()
-                        MobileAds.setRequestConfiguration(requestConfig)
                         MobileAds.initialize(this) {
                             preloadRewardedAd(activeAdUnitId)
                             result.success(true)
@@ -70,10 +64,6 @@ class MainActivity : FlutterActivity() {
                         override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                             isLoadingAd = false
                             rewardedAd = null
-                            // If live unit has no inventory yet during testing, preload Google sample unit
-                            if (adUnitId != GOOGLE_SAMPLE_REWARDED_ID) {
-                                preloadRewardedAd(GOOGLE_SAMPLE_REWARDED_ID)
-                            }
                         }
                     }
                 )
@@ -91,7 +81,6 @@ class MainActivity : FlutterActivity() {
                 rewardedAd = null
                 preloadRewardedAd(adUnitId)
             } else {
-                // Load on-demand with automatic Google test fallback if no fill
                 try {
                     val adRequest = AdRequest.Builder().build()
                     RewardedAd.load(
@@ -105,30 +94,7 @@ class MainActivity : FlutterActivity() {
                             }
 
                             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                                if (adUnitId != GOOGLE_SAMPLE_REWARDED_ID) {
-                                    try {
-                                        val fallbackRequest = AdRequest.Builder().build()
-                                        RewardedAd.load(
-                                            this@MainActivity,
-                                            GOOGLE_SAMPLE_REWARDED_ID,
-                                            fallbackRequest,
-                                            object : RewardedAdLoadCallback() {
-                                                override fun onAdLoaded(fallbackAd: RewardedAd) {
-                                                    presentRewardedAd(fallbackAd, result)
-                                                    preloadRewardedAd(adUnitId)
-                                                }
-
-                                                override fun onAdFailedToLoad(error: LoadAdError) {
-                                                    result.error("AD_LOAD_FAILED", error.message, null)
-                                                }
-                                            }
-                                        )
-                                    } catch (e: Throwable) {
-                                        result.error("AD_EXCEPTION", e.message, null)
-                                    }
-                                } else {
-                                    result.error("AD_LOAD_FAILED", loadAdError.message, null)
-                                }
+                                result.error("AD_LOAD_FAILED", loadAdError.message, null)
                             }
                         }
                     )
