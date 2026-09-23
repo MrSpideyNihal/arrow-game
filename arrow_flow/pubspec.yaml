@@ -1,7 +1,7 @@
 name: arrow_flow
 description: A one-tap logic puzzle game with momentum combo and flow state mechanics.
 publish_to: 'none'
-version: 1.0.2+3
+version: 1.0.3+4
 
 environment:
   sdk: ^3.12.0
